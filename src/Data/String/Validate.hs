@@ -2,8 +2,10 @@ module Data.String.Validate (
     module Data.String.Validate.Char
   , module Data.String.Validate.Class
   , module Data.String.Validate.Length
+  , module Data.String.Validate.Substring
 ) where
 
 import Data.String.Validate.Char
 import Data.String.Validate.Class
 import Data.String.Validate.Length
+import Data.String.Validate.Substring

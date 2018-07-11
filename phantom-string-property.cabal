@@ -33,6 +33,7 @@ library
     Data.String.Validate.Char
     Data.String.Validate.Class
     Data.String.Validate.Length
+    Data.String.Validate.Substring
 
 
 
