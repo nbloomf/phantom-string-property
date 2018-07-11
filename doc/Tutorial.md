@@ -179,3 +179,9 @@ validator is the pointwise conjunction of the constituent properties.
 ``` {.sourceCode .literate .haskell}
 ex13 = validateIO (LinesOf2 (DecimalDigits, lengthAtMost5) LatinLowercase)
 ```
+
+We can have type-level regular expressions(!):
+
+``` {.sourceCode .literate .haskell}
+ex14 = validateIO (Matches (Proxy :: Proxy "abc."))
+```

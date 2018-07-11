@@ -135,3 +135,7 @@ Composite constraints:
 A tuple of `StringProperty`s is again a `StringProperty`, and the validator is the pointwise conjunction of the constituent properties.
 
 > ex13 = validateIO (LinesOf2 (DecimalDigits, lengthAtMost5) LatinLowercase)
+
+We can have type-level regular expressions(!):
+
+> ex14 = validateIO (Matches (Proxy :: Proxy "abc."))
