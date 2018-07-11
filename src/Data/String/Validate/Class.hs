@@ -66,7 +66,7 @@ collectValidationErrors title es = case collectLefts es of
 
 data Tree a
   = Tree a [Tree a]
-  deriving Show
+  deriving (Eq, Show)
 
 instance Functor Tree where
   fmap f (Tree x bs) = Tree (f x) (map (fmap f) bs)
