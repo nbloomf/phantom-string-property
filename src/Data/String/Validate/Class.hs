@@ -1,19 +1,23 @@
 {-# LANGUAGE ScopedTypeVariables, LambdaCase #-}
 module Data.String.Validate.Class (
+  -- * Validation
     Valid()
   , StringProperty(..)
   , toString
   , validate
-  , validateIO
 
+  -- * Errors
   , ValidationError
   , validationError
   , collectValidationErrors
+  , validateIO
 ) where
 
 import Data.Typeable
 import Data.List (intersperse)
 import System.Exit (exitFailure)
+
+
 
 -- | `String` with a phantom /property type/ tag @p@. The constructor for `Valid` is not exported, and the only way to create a value of type `Valid p` is with `validate`.
 newtype Valid p = Valid String
@@ -237,4 +241,29 @@ instance
       , ( show $ typeRep (Proxy :: Proxy p6) , validator p6 str )
       , ( show $ typeRep (Proxy :: Proxy p7) , validator p7 str )
       , ( show $ typeRep (Proxy :: Proxy p8) , validator p8 str )
+      ]
+
+instance
+  ( Typeable p1, StringProperty p1
+  , Typeable p2, StringProperty p2
+  , Typeable p3, StringProperty p3
+  , Typeable p4, StringProperty p4
+  , Typeable p5, StringProperty p5
+  , Typeable p6, StringProperty p6
+  , Typeable p7, StringProperty p7
+  , Typeable p8, StringProperty p8
+  , Typeable p9, StringProperty p9
+  ) => StringProperty (p1,p2,p3,p4,p5,p6,p7,p8,p9) where
+
+  validator (p1,p2,p3,p4,p5,p6,p7,p8,p9) str =
+    collectValidationErrors "In property conjunction"
+      [ ( show $ typeRep (Proxy :: Proxy p1) , validator p1 str )
+      , ( show $ typeRep (Proxy :: Proxy p2) , validator p2 str )
+      , ( show $ typeRep (Proxy :: Proxy p3) , validator p3 str )
+      , ( show $ typeRep (Proxy :: Proxy p4) , validator p4 str )
+      , ( show $ typeRep (Proxy :: Proxy p5) , validator p5 str )
+      , ( show $ typeRep (Proxy :: Proxy p6) , validator p6 str )
+      , ( show $ typeRep (Proxy :: Proxy p7) , validator p7 str )
+      , ( show $ typeRep (Proxy :: Proxy p8) , validator p8 str )
+      , ( show $ typeRep (Proxy :: Proxy p9) , validator p9 str )
       ]
