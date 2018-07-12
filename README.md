@@ -1,6 +1,8 @@
 phantom-string-property
 =======================
 
+[![Build Status](https://travis-ci.org/nbloomf/phantom-string-property.svg?branch=master)](https://travis-ci.org/nbloomf/phantom-string-property)
+
 Haskell library for cheap type-level encodings of string properties
 
 
