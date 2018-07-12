@@ -24,6 +24,8 @@ main = do
         , testLengthAtLeast
         , testLengthAtMost
         ]
+
+      , testConjunctions
       ]
 
 
@@ -457,6 +459,19 @@ testLengthAtMost = testGroup "Length At Most"
 
 
 
+testConjunctions :: TestTree
+testConjunctions = testGroup "Property Conjunctions"
+  [ testValidatorFor
+      (Letters, lengthAtMost16) $
+      every [all isLetter, lengthLEq 16]
+
+  , testValidatorFor
+      (Letters, AlphaNumericChars, lengthAtMost24) $
+      every [all isLetter, all isAlphaNum, lengthLEq 24]
+  ]
+
+
+
 lengthGEq :: Int -> [a] -> Bool
 lengthGEq k = (>= k) . length
 
@@ -465,6 +480,12 @@ lengthLEq k = (<= k) . length
 
 lengthEq :: Int -> [a] -> Bool
 lengthEq k = (== k) . length
+
+(&&&) :: (a -> Bool) -> (a -> Bool) -> a -> Bool
+(&&&) p q a = (p a) && (q a)
+
+every :: [a -> Bool] -> a -> Bool
+every = foldr (&&&) (const True)
 
 testValidatorFor
   :: (Typeable p, StringProperty p)
@@ -476,8 +497,11 @@ testValidatorFor p q =
     proxy :: p -> Proxy p
     proxy _ = Proxy
   in
-    testProperty (show $ typeRep $ proxy p) $
-      testValidator p q
+    testGroup (show $ typeRep $ proxy p)
+      [ testProperty "Predicate" $ testValidator p q
+      , localOption (QuickCheckTests 5000) $
+          testProperty "Identity" $ testIdentity p
+      ]
 
 testValidator
   :: (StringProperty p)
@@ -487,3 +511,14 @@ testValidator
   -> Bool
 testValidator p q string =
   (q string) == (validator p string == Right ())
+
+testIdentity
+  :: (StringProperty p)
+  => p
+  -> String
+  -> Bool
+testIdentity p string =
+  case validate p string of
+    Left _ -> True
+    Right x -> string == toString x
+
