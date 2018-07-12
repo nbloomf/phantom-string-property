@@ -128,6 +128,8 @@ Substring constraints:
 > 
 > ex11 = validateIO (NotSuffixedBy (Proxy :: Proxy "wut"))
 
+These also require `Data.Proxy` and `DataKinds`.
+
 Composite constraints:
 
 > ex12 = validateIO (DecimalDigits, lengthIs10)
@@ -139,3 +141,12 @@ A tuple of `StringProperty`s is again a `StringProperty`, and the validator is t
 We can have type-level regular expressions(!):
 
 > ex14 = validateIO (Matches (Proxy :: Proxy "abc."))
+
+Check the type of `ex14`:
+
+```
+$> :t ex14
+ex14 :: String -> IO (Valid (Matches "abc."))
+```
+
+That regular expression is a _type constraint_, as in, we can use the type system to force strings to match it. I can't get over how cool that is. :)

@@ -167,6 +167,8 @@ ex10 = validateIO (PrefixedBy (Proxy :: Proxy "foo"))
 ex11 = validateIO (NotSuffixedBy (Proxy :: Proxy "wut"))
 ```
 
+These also require `Data.Proxy` and `DataKinds`.
+
 Composite constraints:
 
 ``` {.sourceCode .literate .haskell}
@@ -185,3 +187,12 @@ We can have type-level regular expressions(!):
 ``` {.sourceCode .literate .haskell}
 ex14 = validateIO (Matches (Proxy :: Proxy "abc."))
 ```
+
+Check the type of `ex14`:
+
+    $> :t ex14
+    ex14 :: String -> IO (Valid (Matches "abc."))
+
+That regular expression is a *type constraint*, as in, we can use the
+type system to force strings to match it. I can't get over how cool that
+is. :)

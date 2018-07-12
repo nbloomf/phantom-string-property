@@ -43,4 +43,4 @@ There's a few ways to deal with this.
 
 A well-known hybrid approach is to apply the fragile predicate function _once_, and if it succeeds encode this in the type system using a phantom type. This gives us the benefits of lightweight type safety without the burden of making parsers for every little thing.
 
-This library provides a bunch of prefabricated property encodings.
+This library provides a bunch of prefabricated property encodings. See [the tutorial](https://github.com/nbloomf/phantom-string-property/blob/master/doc/Tutorial.md) for some examples.
