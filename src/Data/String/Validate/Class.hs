@@ -1,10 +1,13 @@
-{-# LANGUAGE ScopedTypeVariables, LambdaCase #-}
+{-# LANGUAGE ScopedTypeVariables, LambdaCase, TypeOperators #-}
 module Data.String.Validate.Class (
   -- * Validation
     Valid()
   , StringProperty(..)
   , toString
   , validate
+
+  -- * Types
+  , Or(..)
 
   -- * Errors
   , ValidationError
@@ -121,6 +124,28 @@ validateIO p str = case validate p str of
     exitFailure
 
 
+
+
+
+data Or p q = p :|| q
+  deriving (Eq, Show, Typeable)
+
+instance
+  ( Typeable p1, StringProperty p1
+  , Typeable p2, StringProperty p2
+  ) => StringProperty (Or p1 p2) where
+
+  validator (p1 :|| p2) str =
+    case validator p1 str of
+      Right () -> Right ()
+      Left err1 -> case validator p2 str of
+        Right () -> Right ()
+        Left err2 -> Left
+          [ validationError "In property disjunction"
+            [ validationError (show $ typeRep (Proxy :: Proxy p1)) err1
+            , validationError (show $ typeRep (Proxy :: Proxy p2)) err2
+            ]
+          ]
 
 
 

@@ -98,15 +98,15 @@ Character classes:
 
 > ex1 = validateIO DecimalDigits
 > 
-> ex2 = validateIO LatinLowercase
+> ex2 = validateIO LowerCaseChars
 > 
-> ex3 = validateIO LatinUppercase
+> ex3 = validateIO UpperCaseChars
 
 Multiple lines:
 
 > ex4 = validateIO (LinesOf DecimalDigits)
 > 
-> ex5 = validateIO (LinesOf2 DecimalDigits LatinLowercase)
+> ex5 = validateIO (LinesOf2 DecimalDigits LowerCaseChars)
 
 Length constraints (note the lower case):
 
@@ -134,7 +134,7 @@ Composite constraints:
 
 A tuple of `StringProperty`s is again a `StringProperty`, and the validator is the pointwise conjunction of the constituent properties.
 
-> ex13 = validateIO (LinesOf2 (DecimalDigits, lengthAtMost5) LatinLowercase)
+> ex13 = validateIO (LinesOf2 (DecimalDigits, lengthAtMost5) LowerCaseChars)
 
 We can have type-level regular expressions(!):
 

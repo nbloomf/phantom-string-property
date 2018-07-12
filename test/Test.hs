@@ -1,6 +1,7 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 module Main where
 
+import Data.Char
 import Data.Typeable
 import Test.Tasty
 import Test.Tasty.QuickCheck
@@ -14,19 +15,21 @@ main :: IO ()
 main = do
   setEnv "TASTY_NUM_THREADS" "4"
   defaultMain $
-    localOption (QuickCheckTests 5000) $
+    localOption (QuickCheckTests 50000) $
     testGroup "Phantom String Properties"
-      [ testValidatorFor
-          DecimalDigits
-          (all $ \c -> elem c "0123456789")
-
-      , testValidatorFor
-          LatinLowercase
-          (all $ \c -> elem c "abcdefghijklmnopqrstuvwxyz")
-
-      , testValidatorFor
-          LatinUppercase
-          (all $ \c -> elem c "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+      [ testGroup "Character Classes"
+        [ testValidatorFor Letters (all isLetter)
+        , testValidatorFor Numbers (all isNumber)
+        , testValidatorFor Punctuation (all isPunctuation)
+        , testValidatorFor MarkChars (all isMark)
+        , testValidatorFor DecimalDigits (all isDigit)
+        , testValidatorFor HexDigits (all isHexDigit)
+        , testValidatorFor LowerCaseChars (all isLower)
+        , testValidatorFor UpperCaseChars (all isUpper)
+        , testValidatorFor AlphaNumericChars (all isAlphaNum)
+        , testValidatorFor AsciiChars (all isAscii)
+        , testValidatorFor Latin1Chars (all isLatin1)
+        ]
       ]
 
 
