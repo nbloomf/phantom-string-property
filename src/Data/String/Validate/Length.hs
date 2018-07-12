@@ -1,4 +1,4 @@
-{-# LANGUAGE DataKinds, KindSignatures #-}
+{-# LANGUAGE DataKinds, KindSignatures, BangPatterns #-}
 module Data.String.Validate.Length (
   -- * Exact Length
     LengthIs(..)
@@ -416,7 +416,7 @@ import Data.String.Validate.Class
 data LengthIs (n :: Nat) = LengthIs (Proxy n)
 
 instance (KnownNat n) => StringProperty (LengthIs n) where
-  validator (LengthIs proxy) str =
+  validator (LengthIs !proxy) str =
     let k = natVal proxy in
     let m = genericLength str in
     if m == k
@@ -567,7 +567,7 @@ lengthIs128 = LengthIs (Proxy :: Proxy 128) :: LengthIs 128
 data LengthAtLeast (n :: Nat) = LengthAtLeast (Proxy n)
 
 instance (KnownNat n) => StringProperty (LengthAtLeast n) where
-  validator (LengthAtLeast proxy) str =
+  validator (LengthAtLeast !proxy) str =
     let k = natVal proxy in
     let m = genericLength str in
     if m >= k
@@ -718,7 +718,7 @@ lengthAtLeast128 = LengthAtLeast (Proxy :: Proxy 128) :: LengthAtLeast 128
 data LengthAtMost (n :: Nat) = LengthAtMost (Proxy n)
 
 instance (KnownNat n) => StringProperty (LengthAtMost n) where
-  validator (LengthAtMost proxy) str =
+  validator (LengthAtMost !proxy) str =
     let k = natVal proxy in
     let m = genericLength str in
     if m <= k
