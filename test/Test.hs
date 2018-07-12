@@ -21,6 +21,8 @@ main = do
         [ testValidatorFor Letters (all isLetter)
         , testValidatorFor Numbers (all isNumber)
         , testValidatorFor Punctuation (all isPunctuation)
+        , testValidatorFor PrintableChars (all isPrint)
+        , testValidatorFor ControlChars (all isControl)
         , testValidatorFor MarkChars (all isMark)
         , testValidatorFor DecimalDigits (all isDigit)
         , testValidatorFor HexDigits (all isHexDigit)
