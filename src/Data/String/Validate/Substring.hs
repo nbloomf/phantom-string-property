@@ -4,6 +4,7 @@ module Data.String.Validate.Substring (
   , PrefixedBy(..)
   , InfixedBy(..)
   , SuffixedBy(..)
+  , IsNotExactly(..)
   , NotPrefixedBy(..)
   , NotInfixedBy(..)
   , NotSuffixedBy(..)

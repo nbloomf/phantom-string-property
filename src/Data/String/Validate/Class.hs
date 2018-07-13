@@ -142,8 +142,8 @@ instance
         Right () -> Right ()
         Left err2 -> Left
           [ validationError "In property disjunction"
-            [ validationError (show $ typeRep (Proxy :: Proxy p1)) err1
-            , validationError (show $ typeRep (Proxy :: Proxy p2)) err2
+            [ validationError (show $ typeRep $! (Proxy :: Proxy p1)) err1
+            , validationError (show $ typeRep $! (Proxy :: Proxy p2)) err2
             ]
           ]
 
@@ -156,8 +156,8 @@ instance
 
   validator (p1,p2) str =
     collectValidationErrors "In property conjunction"
-      [ ( show $ typeRep (Proxy :: Proxy p1) , validator p1 str )
-      , ( show $ typeRep (Proxy :: Proxy p2) , validator p2 str )
+      [ ( show $ typeRep $! (Proxy :: Proxy p1) , validator p1 str )
+      , ( show $ typeRep $! (Proxy :: Proxy p2) , validator p2 str )
       ]
 
 instance
@@ -168,9 +168,9 @@ instance
 
   validator (p1,p2,p3) str =
     collectValidationErrors "In property conjunction"
-      [ ( show $ typeRep (Proxy :: Proxy p1) , validator p1 str )
-      , ( show $ typeRep (Proxy :: Proxy p2) , validator p2 str )
-      , ( show $ typeRep (Proxy :: Proxy p3) , validator p3 str )
+      [ ( show $ typeRep $! (Proxy :: Proxy p1) , validator p1 str )
+      , ( show $ typeRep $! (Proxy :: Proxy p2) , validator p2 str )
+      , ( show $ typeRep $! (Proxy :: Proxy p3) , validator p3 str )
       ]
 
 instance
@@ -182,10 +182,10 @@ instance
 
   validator (p1,p2,p3,p4) str =
     collectValidationErrors "In property conjunction"
-      [ ( show $ typeRep (Proxy :: Proxy p1) , validator p1 str )
-      , ( show $ typeRep (Proxy :: Proxy p2) , validator p2 str )
-      , ( show $ typeRep (Proxy :: Proxy p3) , validator p3 str )
-      , ( show $ typeRep (Proxy :: Proxy p4) , validator p4 str )
+      [ ( show $ typeRep $! (Proxy :: Proxy p1) , validator p1 str )
+      , ( show $ typeRep $! (Proxy :: Proxy p2) , validator p2 str )
+      , ( show $ typeRep $! (Proxy :: Proxy p3) , validator p3 str )
+      , ( show $ typeRep $! (Proxy :: Proxy p4) , validator p4 str )
       ]
 
 instance

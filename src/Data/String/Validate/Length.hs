@@ -417,7 +417,7 @@ data LengthIs (n :: Nat) = LengthIs (Proxy n)
 
 instance (KnownNat n) => StringProperty (LengthIs n) where
   validator (LengthIs !proxy) str =
-    let k = natVal proxy in
+    let k = natVal $! proxy in
     let m = genericLength str in
     if m == k
       then Right ()
@@ -568,7 +568,7 @@ data LengthAtLeast (n :: Nat) = LengthAtLeast (Proxy n)
 
 instance (KnownNat n) => StringProperty (LengthAtLeast n) where
   validator (LengthAtLeast !proxy) str =
-    let k = natVal proxy in
+    let k = natVal $! proxy in
     let m = genericLength str in
     if m >= k
       then Right ()
@@ -719,7 +719,7 @@ data LengthAtMost (n :: Nat) = LengthAtMost (Proxy n)
 
 instance (KnownNat n) => StringProperty (LengthAtMost n) where
   validator (LengthAtMost !proxy) str =
-    let k = natVal proxy in
+    let k = natVal $! proxy in
     let m = genericLength str in
     if m <= k
       then Right ()

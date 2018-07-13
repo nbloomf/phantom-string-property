@@ -1,4 +1,4 @@
-{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE ScopedTypeVariables, DataKinds #-}
 module Main where
 
 import Data.Char
@@ -6,6 +6,8 @@ import Data.Typeable
 import Test.Tasty
 import Test.Tasty.QuickCheck
 import System.Environment (setEnv)
+import Data.List
+import GHC.TypeLits
 
 import Data.String.Validate
 
@@ -18,6 +20,8 @@ main = do
     localOption (QuickCheckTests 50000) $
     testGroup "Phantom String Properties"
       [ testCharacterClasses
+      , testConjunctions
+      , testDisjunctions
 
       , testGroup "Character Length"
         [ testLengthIs
@@ -25,7 +29,13 @@ main = do
         , testLengthAtMost
         ]
 
-      , testConjunctions
+      , testGroup "Substrings"
+        [ testPrefix
+        , testSuffix
+        , testInfix
+        ]
+
+      , testEquivalences
       ]
 
 
@@ -458,17 +468,302 @@ testLengthAtMost = testGroup "Length At Most"
   ]
 
 
+testConjunctions2
+  :: ( Typeable p1, StringProperty p1
+     , Typeable p2, StringProperty p2
+     , Typeable p3, StringProperty p3
+     , Typeable p4, StringProperty p4
+     , Typeable p5, StringProperty p5
+     , Typeable p6, StringProperty p6
+     , Typeable p7, StringProperty p7
+     )
+  => (p1, String -> Bool)
+  -> (p2, String -> Bool)
+  -> (p3, String -> Bool)
+  -> (p4, String -> Bool)
+  -> (p5, String -> Bool)
+  -> (p6, String -> Bool)
+  -> (p7, String -> Bool)
+  -> TestTree
+testConjunctions2 (p1,q1) (p2,q2) (p3,q3) (p4,q4) (p5,q5) (p6,q6) (p7,q7) =
+  testGroup "Property Conjunctions (2)"
+    [ testValidatorFor (p1,p2) $ every [q1,q2]
+    , testValidatorFor (p1,p3) $ every [q1,q3]
+    , testValidatorFor (p1,p4) $ every [q1,q4]
+    , testValidatorFor (p1,p5) $ every [q1,q5]
+    , testValidatorFor (p1,p6) $ every [q1,q6]
+    , testValidatorFor (p1,p7) $ every [q1,q7]
+    , testValidatorFor (p2,p3) $ every [q2,q3]
+    , testValidatorFor (p2,p4) $ every [q2,q4]
+    , testValidatorFor (p2,p5) $ every [q2,q5]
+    , testValidatorFor (p2,p6) $ every [q2,q6]
+    , testValidatorFor (p2,p7) $ every [q2,q7]
+    , testValidatorFor (p3,p4) $ every [q3,q4]
+    , testValidatorFor (p3,p5) $ every [q3,q5]
+    , testValidatorFor (p3,p6) $ every [q3,q6]
+    , testValidatorFor (p3,p7) $ every [q3,q7]
+    , testValidatorFor (p4,p5) $ every [q4,q5]
+    , testValidatorFor (p4,p6) $ every [q4,q6]
+    , testValidatorFor (p4,p7) $ every [q4,q7]
+    , testValidatorFor (p5,p6) $ every [q5,q6]
+    , testValidatorFor (p5,p7) $ every [q5,q7]
+    , testValidatorFor (p6,p7) $ every [q6,q7]
+    ]
+
+testConjunctions3
+  :: ( Typeable p1, StringProperty p1
+     , Typeable p2, StringProperty p2
+     , Typeable p3, StringProperty p3
+     , Typeable p4, StringProperty p4
+     , Typeable p5, StringProperty p5
+     , Typeable p6, StringProperty p6
+     , Typeable p7, StringProperty p7
+     )
+  => (p1, String -> Bool)
+  -> (p2, String -> Bool)
+  -> (p3, String -> Bool)
+  -> (p4, String -> Bool)
+  -> (p5, String -> Bool)
+  -> (p6, String -> Bool)
+  -> (p7, String -> Bool)
+  -> TestTree
+testConjunctions3 (p1,q1) (p2,q2) (p3,q3) (p4,q4) (p5,q5) (p6,q6) (p7,q7) =
+  testGroup "Property Conjunctions (2)"
+    [ testValidatorFor (p1,p2,p3) $ every [q1,q2,q3]
+    , testValidatorFor (p1,p2,p4) $ every [q1,q2,q4]
+    , testValidatorFor (p1,p2,p5) $ every [q1,q2,q5]
+    , testValidatorFor (p1,p2,p6) $ every [q1,q2,q6]
+    , testValidatorFor (p1,p2,p7) $ every [q1,q2,q7]
+    , testValidatorFor (p1,p3,p4) $ every [q1,q3,q4]
+    , testValidatorFor (p1,p3,p5) $ every [q1,q3,q5]
+    , testValidatorFor (p1,p3,p6) $ every [q1,q3,q6]
+    , testValidatorFor (p1,p3,p7) $ every [q1,q3,q7]
+    , testValidatorFor (p1,p4,p5) $ every [q1,q4,q5]
+    , testValidatorFor (p1,p4,p6) $ every [q1,q4,q6]
+    , testValidatorFor (p1,p4,p7) $ every [q1,q4,q7]
+    , testValidatorFor (p1,p5,p6) $ every [q1,q5,q6]
+    , testValidatorFor (p1,p5,p7) $ every [q1,q5,q7]
+    , testValidatorFor (p1,p6,p7) $ every [q1,q6,q7]
+    , testValidatorFor (p2,p3,p4) $ every [q2,q3,q4]
+    , testValidatorFor (p2,p3,p5) $ every [q2,q3,q5]
+    , testValidatorFor (p2,p3,p6) $ every [q2,q3,q6]
+    , testValidatorFor (p2,p3,p7) $ every [q2,q3,q7]
+    , testValidatorFor (p2,p4,p5) $ every [q2,q4,q5]
+    , testValidatorFor (p2,p4,p6) $ every [q2,q4,q6]
+    , testValidatorFor (p2,p4,p7) $ every [q2,q4,q7]
+    , testValidatorFor (p2,p5,p6) $ every [q2,q5,q6]
+    , testValidatorFor (p2,p5,p7) $ every [q2,q5,q7]
+    , testValidatorFor (p2,p6,p7) $ every [q2,q6,q7]
+    , testValidatorFor (p3,p4,p5) $ every [q3,q4,q5]
+    , testValidatorFor (p3,p4,p6) $ every [q3,q4,q6]
+    , testValidatorFor (p3,p4,p7) $ every [q3,q4,q7]
+    , testValidatorFor (p3,p5,p6) $ every [q3,q5,q6]
+    , testValidatorFor (p3,p5,p7) $ every [q3,q5,q7]
+    , testValidatorFor (p3,p6,p7) $ every [q3,q6,q7]
+    , testValidatorFor (p4,p5,p6) $ every [q4,q5,q6]
+    , testValidatorFor (p4,p5,p7) $ every [q4,q5,q7]
+    , testValidatorFor (p4,p6,p7) $ every [q4,q6,q7]
+    , testValidatorFor (p5,p6,p7) $ every [q5,q6,q7]
+    ]
+
+testConjunctions4
+  :: ( Typeable p1, StringProperty p1
+     , Typeable p2, StringProperty p2
+     , Typeable p3, StringProperty p3
+     , Typeable p4, StringProperty p4
+     , Typeable p5, StringProperty p5
+     , Typeable p6, StringProperty p6
+     , Typeable p7, StringProperty p7
+     )
+  => (p1, String -> Bool)
+  -> (p2, String -> Bool)
+  -> (p3, String -> Bool)
+  -> (p4, String -> Bool)
+  -> (p5, String -> Bool)
+  -> (p6, String -> Bool)
+  -> (p7, String -> Bool)
+  -> TestTree
+testConjunctions4 (p1,q1) (p2,q2) (p3,q3) (p4,q4) (p5,q5) (p6,q6) (p7,q7) =
+  testGroup "Property Conjunctions (2)"
+    [ testValidatorFor (p1,p2,p3,p4) $ every [q1,q2,q3,q4]
+    , testValidatorFor (p1,p2,p3,p5) $ every [q1,q2,q3,q5]
+    , testValidatorFor (p1,p2,p3,p6) $ every [q1,q2,q3,q6]
+    , testValidatorFor (p1,p2,p3,p7) $ every [q1,q2,q3,q7]
+    , testValidatorFor (p1,p2,p4,p5) $ every [q1,q2,q4,q5]
+    , testValidatorFor (p1,p2,p4,p6) $ every [q1,q2,q4,q6]
+    , testValidatorFor (p1,p2,p4,p7) $ every [q1,q2,q4,q7]
+    , testValidatorFor (p1,p2,p5,p6) $ every [q1,q2,q5,q6]
+    , testValidatorFor (p1,p2,p5,p7) $ every [q1,q2,q5,q7]
+    , testValidatorFor (p1,p2,p6,p7) $ every [q1,q2,q6,q7]
+    , testValidatorFor (p1,p3,p4,p5) $ every [q1,q3,q4,q5]
+    , testValidatorFor (p1,p3,p4,p6) $ every [q1,q3,q4,q6]
+    , testValidatorFor (p1,p3,p4,p7) $ every [q1,q3,q4,q7]
+    , testValidatorFor (p1,p3,p5,p6) $ every [q1,q3,q5,q6]
+    , testValidatorFor (p1,p3,p5,p7) $ every [q1,q3,q5,q7]
+    , testValidatorFor (p1,p3,p6,p7) $ every [q1,q3,q6,q7]
+    , testValidatorFor (p1,p4,p5,p6) $ every [q1,q4,q5,q6]
+    , testValidatorFor (p1,p4,p5,p7) $ every [q1,q4,q5,q7]
+    , testValidatorFor (p1,p4,p6,p7) $ every [q1,q4,q6,q7]
+    , testValidatorFor (p1,p5,p6,p7) $ every [q1,q5,q6,q7]
+    , testValidatorFor (p2,p3,p4,p5) $ every [q2,q3,q4,q5]
+    , testValidatorFor (p2,p3,p4,p6) $ every [q2,q3,q4,q6]
+    , testValidatorFor (p2,p3,p4,p7) $ every [q2,q3,q4,q7]
+    , testValidatorFor (p2,p3,p5,p6) $ every [q2,q3,q5,q6]
+    , testValidatorFor (p2,p3,p5,p7) $ every [q2,q3,q5,q7]
+    , testValidatorFor (p2,p3,p6,p7) $ every [q2,q3,q6,q7]
+    , testValidatorFor (p2,p4,p5,p6) $ every [q2,q4,q5,q6]
+    , testValidatorFor (p2,p4,p5,p7) $ every [q2,q4,q5,q7]
+    , testValidatorFor (p2,p4,p6,p7) $ every [q2,q4,q6,q7]
+    , testValidatorFor (p2,p5,p6,p7) $ every [q2,q5,q6,q7]
+    , testValidatorFor (p3,p4,p5,p6) $ every [q3,q4,q5,q6]
+    , testValidatorFor (p3,p4,p5,p7) $ every [q3,q4,q5,q7]
+    , testValidatorFor (p3,p4,p6,p7) $ every [q3,q4,q6,q7]
+    , testValidatorFor (p3,p5,p6,p7) $ every [q3,q5,q6,q7]
+    , testValidatorFor (p4,p5,p6,p7) $ every [q4,q5,q6,q7]
+    ]
 
 testConjunctions :: TestTree
 testConjunctions = testGroup "Property Conjunctions"
-  [ testValidatorFor
-      (Letters, lengthAtMost16) $
-      every [all isLetter, lengthLEq 16]
+  [ testConjunctions2
+      (Letters, all isLetter)
+      (Numbers, all isNumber)
+      (AlphaNumericChars, all isAlphaNum)
+      (WhitespaceChars, all isSpace)
+      (lengthAtMost10, lengthLEq 10)
+      (lengthAtLeast5, lengthGEq 5)
+      (lengthIs7, lengthEq 7)
 
-  , testValidatorFor
-      (Letters, AlphaNumericChars, lengthAtMost24) $
-      every [all isLetter, all isAlphaNum, lengthLEq 24]
+  , testConjunctions3
+      (Letters, all isLetter)
+      (Numbers, all isNumber)
+      (AlphaNumericChars, all isAlphaNum)
+      (WhitespaceChars, all isSpace)
+      (lengthAtMost10, lengthLEq 10)
+      (lengthAtLeast5, lengthGEq 5)
+      (lengthIs7, lengthEq 7)
+
+  , testConjunctions4
+      (Letters, all isLetter)
+      (Numbers, all isNumber)
+      (AlphaNumericChars, all isAlphaNum)
+      (WhitespaceChars, all isSpace)
+      (lengthAtMost10, lengthLEq 10)
+      (lengthAtLeast5, lengthGEq 5)
+      (lengthIs7, lengthEq 7)
   ]
+
+
+
+testDisjunctions2
+  :: ( Typeable p1, StringProperty p1
+     , Typeable p2, StringProperty p2
+     , Typeable p3, StringProperty p3
+     , Typeable p4, StringProperty p4
+     , Typeable p5, StringProperty p5
+     , Typeable p6, StringProperty p6
+     , Typeable p7, StringProperty p7
+     )
+  => (p1, String -> Bool)
+  -> (p2, String -> Bool)
+  -> (p3, String -> Bool)
+  -> (p4, String -> Bool)
+  -> (p5, String -> Bool)
+  -> (p6, String -> Bool)
+  -> (p7, String -> Bool)
+  -> TestTree
+testDisjunctions2 (p1,q1) (p2,q2) (p3,q3) (p4,q4) (p5,q5) (p6,q6) (p7,q7) =
+  testGroup "Property Conjunctions (2)"
+    [ testValidatorFor (p1 :|| p2) $ some [q1,q2]
+    , testValidatorFor (p1 :|| p3) $ some [q1,q3]
+    , testValidatorFor (p1 :|| p4) $ some [q1,q4]
+    , testValidatorFor (p1 :|| p5) $ some [q1,q5]
+    , testValidatorFor (p1 :|| p6) $ some [q1,q6]
+    , testValidatorFor (p1 :|| p7) $ some [q1,q7]
+    , testValidatorFor (p2 :|| p3) $ some [q2,q3]
+    , testValidatorFor (p2 :|| p4) $ some [q2,q4]
+    , testValidatorFor (p2 :|| p5) $ some [q2,q5]
+    , testValidatorFor (p2 :|| p6) $ some [q2,q6]
+    , testValidatorFor (p2 :|| p7) $ some [q2,q7]
+    , testValidatorFor (p3 :|| p4) $ some [q3,q4]
+    , testValidatorFor (p3 :|| p5) $ some [q3,q5]
+    , testValidatorFor (p3 :|| p6) $ some [q3,q6]
+    , testValidatorFor (p3 :|| p7) $ some [q3,q7]
+    , testValidatorFor (p4 :|| p5) $ some [q4,q5]
+    , testValidatorFor (p4 :|| p6) $ some [q4,q6]
+    , testValidatorFor (p4 :|| p7) $ some [q4,q7]
+    , testValidatorFor (p5 :|| p6) $ some [q5,q6]
+    , testValidatorFor (p5 :|| p7) $ some [q5,q7]
+    , testValidatorFor (p6 :|| p7) $ some [q6,q7]
+    ]
+
+testDisjunctions :: TestTree
+testDisjunctions = testGroup "Property Disjunctions"
+  [ testDisjunctions2
+      (Letters, all isLetter)
+      (Numbers, all isNumber)
+      (AlphaNumericChars, all isAlphaNum)
+      (WhitespaceChars, all isSpace)
+      (lengthAtMost10, lengthLEq 10)
+      (lengthAtLeast5, lengthGEq 5)
+      (lengthIs7, lengthEq 7)
+  ]
+
+testEquivalences :: TestTree
+testEquivalences = testGroup "Property Equivalence"
+  [ testEquivalenceFor (Letters) (EachCharIs Letters)
+  , testEquivalenceFor (PrintableChars) (EachCharIs PrintableChars)
+  , testEquivalenceFor (DecimalDigits) (EachCharIs DecimalDigits)
+  , testEquivalenceFor (HexDigits) (EachCharIs HexDigits)
+  , testEquivalenceFor (Numbers) (EachCharIs Numbers)
+  , testEquivalenceFor (Punctuation) (EachCharIs Punctuation)
+  , testEquivalenceFor (LowerCaseChars) (EachCharIs LowerCaseChars)
+  , testEquivalenceFor (UpperCaseChars) (EachCharIs UpperCaseChars)
+  , testEquivalenceFor (WhitespaceChars) (EachCharIs WhitespaceChars)
+  , testEquivalenceFor (MarkChars) (EachCharIs MarkChars)
+  , testEquivalenceFor (SymbolChars) (EachCharIs SymbolChars)
+  , testEquivalenceFor (SeparatorChars) (EachCharIs SeparatorChars)
+  , testEquivalenceFor (ControlChars) (EachCharIs ControlChars)
+  , testEquivalenceFor (AlphaNumericChars) (EachCharIs AlphaNumericChars)
+  , testEquivalenceFor (AsciiChars) (EachCharIs AsciiChars)
+  , testEquivalenceFor (Latin1Chars) (EachCharIs Latin1Chars)
+  ]
+
+
+
+testPrefix :: TestTree
+testPrefix = testGroup "PrefixedBy"
+  [ testValidatorFor (PrefixedBy (Proxy :: Proxy "a")) (isPrefixOf "a")
+  , testValidatorFor (PrefixedBy (Proxy :: Proxy "b")) (isPrefixOf "b")
+  , testValidatorFor (PrefixedBy (Proxy :: Proxy "c")) (isPrefixOf "c")
+  , testValidatorFor (PrefixedBy (Proxy :: Proxy "d")) (isPrefixOf "d")
+  , testValidatorFor (PrefixedBy (Proxy :: Proxy "e")) (isPrefixOf "e")
+  , testValidatorFor (PrefixedBy (Proxy :: Proxy "f")) (isPrefixOf "f")
+  , testValidatorFor (PrefixedBy (Proxy :: Proxy "g")) (isPrefixOf "g")
+  ]
+
+testSuffix :: TestTree
+testSuffix = testGroup "SuffixedBy"
+  [ testValidatorFor (SuffixedBy (Proxy :: Proxy "a")) (isSuffixOf "a")
+  , testValidatorFor (SuffixedBy (Proxy :: Proxy "b")) (isSuffixOf "b")
+  , testValidatorFor (SuffixedBy (Proxy :: Proxy "c")) (isSuffixOf "c")
+  , testValidatorFor (SuffixedBy (Proxy :: Proxy "d")) (isSuffixOf "d")
+  , testValidatorFor (SuffixedBy (Proxy :: Proxy "e")) (isSuffixOf "e")
+  , testValidatorFor (SuffixedBy (Proxy :: Proxy "f")) (isSuffixOf "f")
+  , testValidatorFor (SuffixedBy (Proxy :: Proxy "g")) (isSuffixOf "g")
+  ]
+
+testInfix :: TestTree
+testInfix = testGroup "InfixedBy"
+  [ testValidatorFor (InfixedBy (Proxy :: Proxy "a")) (isInfixOf "a")
+  , testValidatorFor (InfixedBy (Proxy :: Proxy "b")) (isInfixOf "b")
+  , testValidatorFor (InfixedBy (Proxy :: Proxy "c")) (isInfixOf "c")
+  , testValidatorFor (InfixedBy (Proxy :: Proxy "d")) (isInfixOf "d")
+  , testValidatorFor (InfixedBy (Proxy :: Proxy "e")) (isInfixOf "e")
+  , testValidatorFor (InfixedBy (Proxy :: Proxy "f")) (isInfixOf "f")
+  , testValidatorFor (InfixedBy (Proxy :: Proxy "g")) (isInfixOf "g")
+  ]
+
+
 
 
 
@@ -481,11 +776,17 @@ lengthLEq k = (<= k) . length
 lengthEq :: Int -> [a] -> Bool
 lengthEq k = (== k) . length
 
-(&&&) :: (a -> Bool) -> (a -> Bool) -> a -> Bool
-(&&&) p q a = (p a) && (q a)
-
 every :: [a -> Bool] -> a -> Bool
 every = foldr (&&&) (const True)
+  where
+    (&&&) :: (a -> Bool) -> (a -> Bool) -> a -> Bool
+    (&&&) p q a = (p a) && (q a)
+
+some :: [a -> Bool] -> a -> Bool
+some = foldr (|||) (const False)
+  where
+    (|||) :: (a -> Bool) -> (a -> Bool) -> a -> Bool
+    (|||) p q a = (p a) || (q a)
 
 testValidatorFor
   :: (Typeable p, StringProperty p)
@@ -503,22 +804,46 @@ testValidatorFor p q =
           testProperty "Identity" $ testIdentity p
       ]
 
+testEquivalenceFor
+  :: (Typeable p1, StringProperty p1, Typeable p2, StringProperty p2)
+  => p1
+  -> p2
+  -> TestTree
+testEquivalenceFor p1 p2 =
+  let
+    proxy :: p -> Proxy p
+    proxy _ = Proxy
+
+    label = "Equivalent:" ++
+      (show $ typeRep $ proxy p1) ++ " and " ++
+      (show $ typeRep $ proxy p2)
+  in
+    localOption (QuickCheckTests 5000) $
+      testProperty label $ testEquivalence p1 p2
+
+-- The validator is equivalent to some given predicate
 testValidator
   :: (StringProperty p)
-  => p
-  -> (String -> Bool)
-  -> String
-  -> Bool
+  => p -> (String -> Bool) -> String -> Bool
 testValidator p q string =
   (q string) == (validator p string == Right ())
 
+-- The validated string is unchanged
 testIdentity
   :: (StringProperty p)
-  => p
-  -> String
-  -> Bool
+  => p -> String -> Bool
 testIdentity p string =
   case validate p string of
-    Left _ -> True
+    Left err -> seq (length $ show err) True
     Right x -> string == toString x
+
+-- For testing equivalent string properties
+testEquivalence
+  :: (StringProperty p1, StringProperty p2)
+  => p1 -> p2 -> String -> Bool
+testEquivalence p1 p2 string =
+  case (validator p1 string, validator p2 string) of
+    (Right (), Right ()) -> True
+    (Left err1, Left err2) -> seq (length $ show err1 ++ show err2) True
+    _ -> False
 

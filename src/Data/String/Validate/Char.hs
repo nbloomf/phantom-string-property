@@ -1,3 +1,4 @@
+{-# LANGUAGE BangPatterns #-}
 module Data.String.Validate.Char (
   -- * Character Classes
     PrintableChars(..)
@@ -211,6 +212,6 @@ data EachCharIs p = EachCharIs p
  deriving (Eq, Show, Typeable)
 
 instance (StringProperty p) => StringProperty (EachCharIs p) where
-  validator (EachCharIs p) string =
+  validator (EachCharIs !p) string =
     collectValidationErrors "Each character" $
       zipWith (\i c -> ("At position " ++ show i, validator p [c])) [1..] string
