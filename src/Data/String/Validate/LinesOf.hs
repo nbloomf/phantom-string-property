@@ -1,6 +1,7 @@
-{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE ScopedTypeVariables, DataKinds, KindSignatures, BangPatterns #-}
 module Data.String.Validate.LinesOf (
-    LinesOf(..)
+    ManyLinesOf(..)
+  , LinesOf(..)
 
   -- * Fixed Number of Lines
   , LinesOf1(..)
@@ -13,22 +14,62 @@ module Data.String.Validate.LinesOf (
 ) where
 
 import Data.Typeable
+import GHC.TypeLits
+import Data.List (genericTake, genericLength)
 
 import Data.String.Validate.Class
 
 
 
-data LinesOf p = LinesOf p
 
-instance (Typeable p, StringProperty p) => StringProperty (LinesOf p) where
-  validator (LinesOf p) string =
+
+data ManyLinesOf p = ManyLinesOf p
+  deriving (Eq, Show, Typeable)
+
+instance (Typeable p, StringProperty p) => StringProperty (ManyLinesOf p) where
+  validator (ManyLinesOf p) string =
     collectValidationErrors
-      ("Lines of " ++ (show $ typeRep (Proxy :: Proxy p)))
+      ("Many lines of " ++ (show $ typeRep $! (Proxy :: Proxy p)))
       (zipWith (\i x -> ("Line " ++ show i, validator p x)) [1..] (lines string))
 
 
 
+
+
+data LinesOf (num :: Nat) p = LinesOf (Proxy num) p
+  deriving (Eq, Show, Typeable)
+
+instance (KnownNat n, Typeable p, StringProperty p) => StringProperty (LinesOf n p) where
+  validator (LinesOf n p) str =
+    let
+      num = natVal $! n
+
+      lns = lines str
+
+      checkNum :: (String, Either [ValidationError] ())
+      checkNum =
+        let
+          w = genericLength lns
+          label = "Number of lines is " ++ show w ++ " but expected " ++ show num
+        in
+          if w == num
+            then ("", Right ())
+            else (label, Left [])
+
+      checkLine :: Int -> String -> (String, Either [ValidationError] ())
+      checkLine i cs =
+        ("Line " ++ show i, validator p cs )
+
+    in
+      collectValidationErrors ("Fixed number of lines (" ++ show num ++ ")") $
+        checkNum : zipWith checkLine [1..] (genericTake num lns)
+
+
+
+
+
 data LinesOf1 p1 = LinesOf1 p1
+  deriving (Eq, Show, Typeable)
 
 instance
   ( Typeable p1, StringProperty p1
@@ -36,7 +77,7 @@ instance
 
   validator (LinesOf1 p1) str = case lines str of
     [l1] -> collectValidationErrors "Exactly Two Lines"
-      [ ( "Line 1: " ++ (show $ typeRep (Proxy :: Proxy p1)), validator p1 l1 )
+      [ ( "Line 1: " ++ (show $ typeRep $! (Proxy :: Proxy p1)), validator p1 l1 )
       ]
 
     ls ->
@@ -48,7 +89,10 @@ instance
 
 
 
+
+
 data LinesOf2 p1 p2 = LinesOf2 p1 p2
+  deriving (Eq, Show, Typeable)
 
 instance
   ( Typeable p1, StringProperty p1
@@ -57,8 +101,8 @@ instance
 
   validator (LinesOf2 p1 p2) str = case lines str of
     [l1,l2] -> collectValidationErrors "Exactly Two Lines"
-      [ ( "Line 1: " ++ (show $ typeRep (Proxy :: Proxy p1)), validator p1 l1 )
-      , ( "Line 2: " ++ (show $ typeRep (Proxy :: Proxy p2)), validator p2 l2 )
+      [ ( "Line 1: " ++ (show $ typeRep $! (Proxy :: Proxy p1)), validator p1 l1 )
+      , ( "Line 2: " ++ (show $ typeRep $! (Proxy :: Proxy p2)), validator p2 l2 )
       ]
 
     ls ->
@@ -70,7 +114,10 @@ instance
 
 
 
+
+
 data LinesOf3 p1 p2 p3 = LinesOf3 p1 p2 p3
+  deriving (Eq, Show, Typeable)
 
 instance
   ( Typeable p1, StringProperty p1
@@ -80,9 +127,9 @@ instance
 
   validator (LinesOf3 p1 p2 p3) str = case lines str of
     [l1,l2,l3] -> collectValidationErrors "Exactly Three Lines"
-      [ ( "Line 1: " ++ (show $ typeRep (Proxy :: Proxy p1)), validator p1 l1 )
-      , ( "Line 2: " ++ (show $ typeRep (Proxy :: Proxy p2)), validator p2 l2 )
-      , ( "Line 3: " ++ (show $ typeRep (Proxy :: Proxy p3)), validator p3 l3 )
+      [ ( "Line 1: " ++ (show $ typeRep $! (Proxy :: Proxy p1)), validator p1 l1 )
+      , ( "Line 2: " ++ (show $ typeRep $! (Proxy :: Proxy p2)), validator p2 l2 )
+      , ( "Line 3: " ++ (show $ typeRep $! (Proxy :: Proxy p3)), validator p3 l3 )
       ]
 
     ls ->
@@ -94,7 +141,10 @@ instance
 
 
 
+
+
 data LinesOf4 p1 p2 p3 p4 = LinesOf4 p1 p2 p3 p4
+  deriving (Eq, Show, Typeable)
 
 instance
   ( Typeable p1, StringProperty p1
@@ -105,10 +155,10 @@ instance
 
   validator (LinesOf4 p1 p2 p3 p4) str = case lines str of
     [l1,l2,l3,l4] -> collectValidationErrors "Exactly Four Lines"
-      [ ( "Line 1: " ++ (show $ typeRep (Proxy :: Proxy p1)), validator p1 l1 )
-      , ( "Line 2: " ++ (show $ typeRep (Proxy :: Proxy p2)), validator p2 l2 )
-      , ( "Line 3: " ++ (show $ typeRep (Proxy :: Proxy p3)), validator p3 l3 )
-      , ( "Line 4: " ++ (show $ typeRep (Proxy :: Proxy p4)), validator p4 l4 )
+      [ ( "Line 1: " ++ (show $ typeRep $! (Proxy :: Proxy p1)), validator p1 l1 )
+      , ( "Line 2: " ++ (show $ typeRep $! (Proxy :: Proxy p2)), validator p2 l2 )
+      , ( "Line 3: " ++ (show $ typeRep $! (Proxy :: Proxy p3)), validator p3 l3 )
+      , ( "Line 4: " ++ (show $ typeRep $! (Proxy :: Proxy p4)), validator p4 l4 )
       ]
 
     ls ->
@@ -120,7 +170,10 @@ instance
 
 
 
+
+
 data LinesOf5 p1 p2 p3 p4 p5 = LinesOf5 p1 p2 p3 p4 p5
+  deriving (Eq, Show, Typeable)
 
 instance
   ( Typeable p1, StringProperty p1
@@ -132,11 +185,11 @@ instance
 
   validator (LinesOf5 p1 p2 p3 p4 p5) str = case lines str of
     [l1,l2,l3,l4,l5] -> collectValidationErrors "Exactly Five Lines"
-      [ ( "Line 1: " ++ (show $ typeRep (Proxy :: Proxy p1)), validator p1 l1 )
-      , ( "Line 2: " ++ (show $ typeRep (Proxy :: Proxy p2)), validator p2 l2 )
-      , ( "Line 3: " ++ (show $ typeRep (Proxy :: Proxy p3)), validator p3 l3 )
-      , ( "Line 4: " ++ (show $ typeRep (Proxy :: Proxy p4)), validator p4 l4 )
-      , ( "Line 5: " ++ (show $ typeRep (Proxy :: Proxy p5)), validator p5 l5 )
+      [ ( "Line 1: " ++ (show $ typeRep $! (Proxy :: Proxy p1)), validator p1 l1 )
+      , ( "Line 2: " ++ (show $ typeRep $! (Proxy :: Proxy p2)), validator p2 l2 )
+      , ( "Line 3: " ++ (show $ typeRep $! (Proxy :: Proxy p3)), validator p3 l3 )
+      , ( "Line 4: " ++ (show $ typeRep $! (Proxy :: Proxy p4)), validator p4 l4 )
+      , ( "Line 5: " ++ (show $ typeRep $! (Proxy :: Proxy p5)), validator p5 l5 )
       ]
 
     ls ->
@@ -148,7 +201,10 @@ instance
 
 
 
+
+
 data LinesOf6 p1 p2 p3 p4 p5 p6 = LinesOf6 p1 p2 p3 p4 p5 p6
+  deriving (Eq, Show, Typeable)
 
 instance
   ( Typeable p1, StringProperty p1
@@ -161,12 +217,12 @@ instance
 
   validator (LinesOf6 p1 p2 p3 p4 p5 p6) str = case lines str of
     [l1,l2,l3,l4,l5,l6] -> collectValidationErrors "Exactly Six Lines"
-      [ ( "Line 1: " ++ (show $ typeRep (Proxy :: Proxy p1)), validator p1 l1 )
-      , ( "Line 2: " ++ (show $ typeRep (Proxy :: Proxy p2)), validator p2 l2 )
-      , ( "Line 3: " ++ (show $ typeRep (Proxy :: Proxy p3)), validator p3 l3 )
-      , ( "Line 4: " ++ (show $ typeRep (Proxy :: Proxy p4)), validator p4 l4 )
-      , ( "Line 5: " ++ (show $ typeRep (Proxy :: Proxy p5)), validator p5 l5 )
-      , ( "Line 6: " ++ (show $ typeRep (Proxy :: Proxy p6)), validator p6 l6 )
+      [ ( "Line 1: " ++ (show $ typeRep $! (Proxy :: Proxy p1)), validator p1 l1 )
+      , ( "Line 2: " ++ (show $ typeRep $! (Proxy :: Proxy p2)), validator p2 l2 )
+      , ( "Line 3: " ++ (show $ typeRep $! (Proxy :: Proxy p3)), validator p3 l3 )
+      , ( "Line 4: " ++ (show $ typeRep $! (Proxy :: Proxy p4)), validator p4 l4 )
+      , ( "Line 5: " ++ (show $ typeRep $! (Proxy :: Proxy p5)), validator p5 l5 )
+      , ( "Line 6: " ++ (show $ typeRep $! (Proxy :: Proxy p6)), validator p6 l6 )
       ]
 
     ls ->
@@ -178,7 +234,10 @@ instance
 
 
 
+
+
 data LinesOf7 p1 p2 p3 p4 p5 p6 p7 = LinesOf7 p1 p2 p3 p4 p5 p6 p7
+  deriving (Eq, Show, Typeable)
 
 instance
   ( Typeable p1, StringProperty p1
@@ -192,13 +251,13 @@ instance
 
   validator (LinesOf7 p1 p2 p3 p4 p5 p6 p7) str = case lines str of
     [l1,l2,l3,l4,l5,l6,l7] -> collectValidationErrors "Exactly Seven Lines"
-      [ ( "Line 1: " ++ (show $ typeRep (Proxy :: Proxy p1)), validator p1 l1 )
-      , ( "Line 2: " ++ (show $ typeRep (Proxy :: Proxy p2)), validator p2 l2 )
-      , ( "Line 3: " ++ (show $ typeRep (Proxy :: Proxy p3)), validator p3 l3 )
-      , ( "Line 4: " ++ (show $ typeRep (Proxy :: Proxy p4)), validator p4 l4 )
-      , ( "Line 5: " ++ (show $ typeRep (Proxy :: Proxy p5)), validator p5 l5 )
-      , ( "Line 6: " ++ (show $ typeRep (Proxy :: Proxy p6)), validator p6 l6 )
-      , ( "Line 7: " ++ (show $ typeRep (Proxy :: Proxy p7)), validator p7 l7 )
+      [ ( "Line 1: " ++ (show $ typeRep $! (Proxy :: Proxy p1)), validator p1 l1 )
+      , ( "Line 2: " ++ (show $ typeRep $! (Proxy :: Proxy p2)), validator p2 l2 )
+      , ( "Line 3: " ++ (show $ typeRep $! (Proxy :: Proxy p3)), validator p3 l3 )
+      , ( "Line 4: " ++ (show $ typeRep $! (Proxy :: Proxy p4)), validator p4 l4 )
+      , ( "Line 5: " ++ (show $ typeRep $! (Proxy :: Proxy p5)), validator p5 l5 )
+      , ( "Line 6: " ++ (show $ typeRep $! (Proxy :: Proxy p6)), validator p6 l6 )
+      , ( "Line 7: " ++ (show $ typeRep $! (Proxy :: Proxy p7)), validator p7 l7 )
       ]
 
     ls ->

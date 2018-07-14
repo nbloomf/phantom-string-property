@@ -104,7 +104,7 @@ Character classes:
 
 Multiple lines:
 
-> ex4 = validateIO (LinesOf DecimalDigits)
+> ex4 = validateIO (ManyLinesOf DecimalDigits)
 > 
 > ex5 = validateIO (LinesOf2 DecimalDigits LowerCaseChars)
 

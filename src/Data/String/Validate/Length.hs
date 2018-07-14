@@ -414,6 +414,7 @@ import Data.String.Validate.Class
 
 
 data LengthIs (n :: Nat) = LengthIs (Proxy n)
+  deriving (Eq, Show, Typeable)
 
 instance (KnownNat n) => StringProperty (LengthIs n) where
   validator (LengthIs !proxy) str =
@@ -565,6 +566,7 @@ lengthIs128 = LengthIs (Proxy :: Proxy 128) :: LengthIs 128
 
 
 data LengthAtLeast (n :: Nat) = LengthAtLeast (Proxy n)
+  deriving (Eq, Show, Typeable)
 
 instance (KnownNat n) => StringProperty (LengthAtLeast n) where
   validator (LengthAtLeast !proxy) str =
@@ -716,6 +718,7 @@ lengthAtLeast128 = LengthAtLeast (Proxy :: Proxy 128) :: LengthAtLeast 128
 
 
 data LengthAtMost (n :: Nat) = LengthAtMost (Proxy n)
+  deriving (Eq, Show, Typeable)
 
 instance (KnownNat n) => StringProperty (LengthAtMost n) where
   validator (LengthAtMost !proxy) str =

@@ -213,11 +213,11 @@ instance
 
   validator (p1,p2,p3,p4,p5) str =
     collectValidationErrors "In property conjunction"
-      [ ( show $ typeRep (Proxy :: Proxy p1) , validator p1 str )
-      , ( show $ typeRep (Proxy :: Proxy p2) , validator p2 str )
-      , ( show $ typeRep (Proxy :: Proxy p3) , validator p3 str )
-      , ( show $ typeRep (Proxy :: Proxy p4) , validator p4 str )
-      , ( show $ typeRep (Proxy :: Proxy p5) , validator p5 str )
+      [ ( show $ typeRep $! (Proxy :: Proxy p1) , validator p1 str )
+      , ( show $ typeRep $! (Proxy :: Proxy p2) , validator p2 str )
+      , ( show $ typeRep $! (Proxy :: Proxy p3) , validator p3 str )
+      , ( show $ typeRep $! (Proxy :: Proxy p4) , validator p4 str )
+      , ( show $ typeRep $! (Proxy :: Proxy p5) , validator p5 str )
       ]
 
 instance
@@ -231,12 +231,12 @@ instance
 
   validator (p1,p2,p3,p4,p5,p6) str =
     collectValidationErrors "In property conjunction"
-      [ ( show $ typeRep (Proxy :: Proxy p1) , validator p1 str )
-      , ( show $ typeRep (Proxy :: Proxy p2) , validator p2 str )
-      , ( show $ typeRep (Proxy :: Proxy p3) , validator p3 str )
-      , ( show $ typeRep (Proxy :: Proxy p4) , validator p4 str )
-      , ( show $ typeRep (Proxy :: Proxy p5) , validator p5 str )
-      , ( show $ typeRep (Proxy :: Proxy p6) , validator p6 str )
+      [ ( show $ typeRep $! (Proxy :: Proxy p1) , validator p1 str )
+      , ( show $ typeRep $! (Proxy :: Proxy p2) , validator p2 str )
+      , ( show $ typeRep $! (Proxy :: Proxy p3) , validator p3 str )
+      , ( show $ typeRep $! (Proxy :: Proxy p4) , validator p4 str )
+      , ( show $ typeRep $! (Proxy :: Proxy p5) , validator p5 str )
+      , ( show $ typeRep $! (Proxy :: Proxy p6) , validator p6 str )
       ]
 
 instance
@@ -251,13 +251,13 @@ instance
 
   validator (p1,p2,p3,p4,p5,p6,p7) str =
     collectValidationErrors "In property conjunction"
-      [ ( show $ typeRep (Proxy :: Proxy p1) , validator p1 str )
-      , ( show $ typeRep (Proxy :: Proxy p2) , validator p2 str )
-      , ( show $ typeRep (Proxy :: Proxy p3) , validator p3 str )
-      , ( show $ typeRep (Proxy :: Proxy p4) , validator p4 str )
-      , ( show $ typeRep (Proxy :: Proxy p5) , validator p5 str )
-      , ( show $ typeRep (Proxy :: Proxy p6) , validator p6 str )
-      , ( show $ typeRep (Proxy :: Proxy p7) , validator p7 str )
+      [ ( show $ typeRep $! (Proxy :: Proxy p1) , validator p1 str )
+      , ( show $ typeRep $! (Proxy :: Proxy p2) , validator p2 str )
+      , ( show $ typeRep $! (Proxy :: Proxy p3) , validator p3 str )
+      , ( show $ typeRep $! (Proxy :: Proxy p4) , validator p4 str )
+      , ( show $ typeRep $! (Proxy :: Proxy p5) , validator p5 str )
+      , ( show $ typeRep $! (Proxy :: Proxy p6) , validator p6 str )
+      , ( show $ typeRep $! (Proxy :: Proxy p7) , validator p7 str )
       ]
 
 instance
@@ -273,14 +273,14 @@ instance
 
   validator (p1,p2,p3,p4,p5,p6,p7,p8) str =
     collectValidationErrors "In property conjunction"
-      [ ( show $ typeRep (Proxy :: Proxy p1) , validator p1 str )
-      , ( show $ typeRep (Proxy :: Proxy p2) , validator p2 str )
-      , ( show $ typeRep (Proxy :: Proxy p3) , validator p3 str )
-      , ( show $ typeRep (Proxy :: Proxy p4) , validator p4 str )
-      , ( show $ typeRep (Proxy :: Proxy p5) , validator p5 str )
-      , ( show $ typeRep (Proxy :: Proxy p6) , validator p6 str )
-      , ( show $ typeRep (Proxy :: Proxy p7) , validator p7 str )
-      , ( show $ typeRep (Proxy :: Proxy p8) , validator p8 str )
+      [ ( show $ typeRep $! (Proxy :: Proxy p1) , validator p1 str )
+      , ( show $ typeRep $! (Proxy :: Proxy p2) , validator p2 str )
+      , ( show $ typeRep $! (Proxy :: Proxy p3) , validator p3 str )
+      , ( show $ typeRep $! (Proxy :: Proxy p4) , validator p4 str )
+      , ( show $ typeRep $! (Proxy :: Proxy p5) , validator p5 str )
+      , ( show $ typeRep $! (Proxy :: Proxy p6) , validator p6 str )
+      , ( show $ typeRep $! (Proxy :: Proxy p7) , validator p7 str )
+      , ( show $ typeRep $! (Proxy :: Proxy p8) , validator p8 str )
       ]
 
 instance
@@ -297,13 +297,13 @@ instance
 
   validator (p1,p2,p3,p4,p5,p6,p7,p8,p9) str =
     collectValidationErrors "In property conjunction"
-      [ ( show $ typeRep (Proxy :: Proxy p1) , validator p1 str )
-      , ( show $ typeRep (Proxy :: Proxy p2) , validator p2 str )
-      , ( show $ typeRep (Proxy :: Proxy p3) , validator p3 str )
-      , ( show $ typeRep (Proxy :: Proxy p4) , validator p4 str )
-      , ( show $ typeRep (Proxy :: Proxy p5) , validator p5 str )
-      , ( show $ typeRep (Proxy :: Proxy p6) , validator p6 str )
-      , ( show $ typeRep (Proxy :: Proxy p7) , validator p7 str )
-      , ( show $ typeRep (Proxy :: Proxy p8) , validator p8 str )
-      , ( show $ typeRep (Proxy :: Proxy p9) , validator p9 str )
+      [ ( show $ typeRep $! (Proxy :: Proxy p1) , validator p1 str )
+      , ( show $ typeRep $! (Proxy :: Proxy p2) , validator p2 str )
+      , ( show $ typeRep $! (Proxy :: Proxy p3) , validator p3 str )
+      , ( show $ typeRep $! (Proxy :: Proxy p4) , validator p4 str )
+      , ( show $ typeRep $! (Proxy :: Proxy p5) , validator p5 str )
+      , ( show $ typeRep $! (Proxy :: Proxy p6) , validator p6 str )
+      , ( show $ typeRep $! (Proxy :: Proxy p7) , validator p7 str )
+      , ( show $ typeRep $! (Proxy :: Proxy p8) , validator p8 str )
+      , ( show $ typeRep $! (Proxy :: Proxy p9) , validator p9 str )
       ]
