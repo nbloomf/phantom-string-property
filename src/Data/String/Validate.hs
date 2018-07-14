@@ -1,6 +1,7 @@
 module Data.String.Validate (
     module Data.String.Validate.Char
   , module Data.String.Validate.Class
+  , module Data.String.Validate.FixedWidth
   , module Data.String.Validate.Length
   , module Data.String.Validate.LinesOf
   , module Data.String.Validate.Regex
@@ -9,6 +10,7 @@ module Data.String.Validate (
 
 import Data.String.Validate.Char
 import Data.String.Validate.Class
+import Data.String.Validate.FixedWidth
 import Data.String.Validate.Length
 import Data.String.Validate.LinesOf
 import Data.String.Validate.Regex

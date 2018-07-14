@@ -13,6 +13,7 @@ module Data.String.Validate.Class (
   , ValidationError
   , validationError
   , collectValidationErrors
+  , catValidationErrors
   , validateIO
 ) where
 
@@ -64,6 +65,20 @@ collectValidationErrors title es = case collectLefts es of
         Left b -> case collectLefts rest of
           Right _ -> Left [(a,b)]
           Left cs -> Left $ (a,b):cs
+
+catValidationErrors
+  :: [Either [ValidationError] ()]
+  -> Either [ValidationError] ()
+catValidationErrors = catLefts
+  where
+    catLefts :: [Either [a] ()] -> Either [a] ()
+    catLefts list = case list of
+      [] -> Right ()
+      x:rest -> case x of
+        Right () -> catLefts rest
+        Left as -> case catLefts rest of
+          Right () -> Left as
+          Left ass -> Left (as ++ ass)
 
 
 

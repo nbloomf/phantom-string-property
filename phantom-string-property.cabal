@@ -34,6 +34,7 @@ library
     Data.String.Validate
     Data.String.Validate.Char
     Data.String.Validate.Class
+    Data.String.Validate.FixedWidth
     Data.String.Validate.Length
     Data.String.Validate.LinesOf
     Data.String.Validate.Regex
