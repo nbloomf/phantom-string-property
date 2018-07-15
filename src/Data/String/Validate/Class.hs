@@ -1,12 +1,14 @@
-{-# LANGUAGE ScopedTypeVariables, LambdaCase, TypeOperators #-}
+{-# LANGUAGE ScopedTypeVariables, LambdaCase, TypeOperators, BangPatterns #-}
 module Data.String.Validate.Class (
   -- * Validation
-    Valid()
+    StringOf()
   , StringProperty(..)
   , toString
   , validate
 
   -- * Types
+  , IsEmpty(..)
+  , IsNotEmpty(..)
   , Or(..)
 
   -- * Errors
@@ -15,20 +17,21 @@ module Data.String.Validate.Class (
   , collectValidationErrors
   , catValidationErrors
   , validateIO
+  , prettyValidationErrors
 ) where
 
 import Data.Typeable
-import Data.List (intersperse)
+import Data.List (intercalate)
 import System.Exit (exitFailure)
 
 
 
 -- | `String` with a phantom /property type/ tag @p@. The constructor for `Valid` is not exported, and the only way to create a value of type `Valid p` is with `validate`.
-newtype Valid p = Valid String
+newtype StringOf p = Valid String
   deriving (Eq, Show)
 
 -- | Recover the ordinary `String` value of a validated string.
-toString :: Valid p -> String
+toString :: StringOf p -> String
 toString (Valid s) = s
 
 -- | Class for types representing properties that a string might satisfy, like having balanced parentheses or being valid HTML.
@@ -40,7 +43,7 @@ validate
   :: (StringProperty p)
   => p
   -> String
-  -> Either [ValidationError] (Valid p)
+  -> Either [ValidationError] (StringOf p)
 validate p s = case validator p s of
   Right () -> Right (Valid s)
   Left err -> Left err
@@ -60,7 +63,7 @@ collectValidationErrors title es = case collectLefts es of
     collectLefts :: [(a, Either b ())] -> Either [(a,b)] ()
     collectLefts list = case list of
       [] -> Right ()
-      (a,e):rest -> case e of
+      (!a,e):rest -> case e of
         Right _ -> collectLefts rest
         Left b -> case collectLefts rest of
           Right _ -> Left [(a,b)]
@@ -96,7 +99,7 @@ prettyTree = render . addPrefix
     flatten (Tree x bs) = x : concatMap flatten bs
 
     render :: Tree String -> String
-    render = concat . intersperse "\n" . flatten
+    render = intercalate "\n" . flatten
 
     mapLast :: (a -> b) -> (a -> b) -> [a] -> [b]
     mapLast f g = \case
@@ -121,7 +124,7 @@ validationError = Tree
 
 prettyValidationErrors :: [ValidationError] -> String
 prettyValidationErrors =
-  concat . intersperse "\n" . map prettyTree
+  intercalate "\n" . map prettyTree
 
 
 
@@ -130,13 +133,35 @@ validateIO
   :: (StringProperty p)
   => p
   -> String
-  -> IO (Valid p)
+  -> IO (StringOf p)
 validateIO p str = case validate p str of
   Right x -> return x
   Left err -> do
     putStrLn "\x1b[1;35mValidation Error!\x1b[0;39;49m"
     putStrLn $ prettyValidationErrors err
     exitFailure
+
+
+
+
+
+data IsEmpty = IsEmpty
+  deriving (Eq, Show, Typeable)
+
+instance StringProperty IsEmpty where
+  validator IsEmpty str = if str == ""
+    then Right ()
+    else Left [validationError "Expected empty string" []]
+
+
+
+data IsNotEmpty = IsNotEmpty
+  deriving (Eq, Show, Typeable)
+
+instance StringProperty IsNotEmpty where
+  validator IsNotEmpty str = if str /= ""
+    then Right ()
+    else Left [validationError "Expected empty string" []]
 
 
 

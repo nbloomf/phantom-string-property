@@ -22,10 +22,10 @@ Getting Started
 This package exposes four important pieces, reproduced here for reference:
 
 ```
-newtype Valid p = Valid String
+newtype StringOf p = Valid String
   deriving (Eq, Show)
 
-toString :: Valid p -> String
+toString :: StringOf p -> String
 toString (Valid s) = s
 
 class StringProperty p where
@@ -35,13 +35,13 @@ validate
   :: (StringProperty p)
   => p
   -> String
-  -> Either [ValidationError] (Valid p)
+  -> Either [ValidationError] (StringOf p)
 validate p s = case validator p s of
   Right () -> Right (Valid s)
   Left err -> Left err
 ```
 
-Note that `Valid p` type. The `p` parameter is what's sometimes called a _phantom type_, since it doesn't appear on the right hand side of the type definition. That, and the fact that `Valid` is defined as a `newtype`, means that `p` plays no role whatsoever at runtime. Even the `Valid` constructor is optimized out.
+Note that `StringOf p` type. The `p` parameter is what's sometimes called a _phantom type_, since it doesn't appear on the right hand side of the type definition. That, and the fact that `StringOf` is defined as a `newtype`, means that `p` plays no role whatsoever at runtime. Even the `Valid` constructor is optimized out.
 
 What good is `p` then? We can use it to cheaply encode _properties_ at the type level. The constructor for `Valid p` is not exported, so the only way to construct a new `Valid p` value is via the `validate` function, which can only be used if `p` is an instance of the `StringProperty` class. In short -- a value of type `Valid p` can only exist if it satisfies the `validator p` function. Here's a simple example.
 
@@ -67,7 +67,7 @@ Expected just "A"
 
 Say we have a function that ostensibly takes a `String` argument, but really that function only makes sense for the string `"A"`. We can use the type system to enforce this restriction by taking not a `String`, but a `Valid IsJustA` -- which, recall, are indistinguishable at runtime.
 
-> itsAnA :: Valid IsJustA -> IO ()
+> itsAnA :: StringOf IsJustA -> IO ()
 > itsAnA x = if "A" == toString x
 >   then putStrLn "Yup, it's an 'A' alright."
 >   else putStrLn "This line never prints"

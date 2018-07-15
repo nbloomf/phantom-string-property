@@ -53,7 +53,7 @@ instance (KnownNat n, Typeable p, StringProperty p) => StringProperty (LinesOf n
           label = "Number of lines is " ++ show w ++ " but expected " ++ show num
         in
           if w == num
-            then ("", Right ())
+            then ("", Right $! ())
             else (label, Left [])
 
       checkLine :: Int -> String -> (String, Either [ValidationError] ())

@@ -63,5 +63,6 @@ test-suite phantom-string-property-test
       base >=4.7 && <5
     , phantom-string-property
 
+    , regex-pcre >=0.93.2 && <1.0
     , tasty >=1.1.0.2 && <1.2
     , tasty-quickcheck >=0.9.2 && <1.0

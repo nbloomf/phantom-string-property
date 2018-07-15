@@ -39,7 +39,7 @@ instance (KnownNat n, StringProperty p) => StringProperty (ManyFixedWidth n p) w
           checkWidth =
             let m = genericLength cs in
             if m == width
-              then Right ()
+              then Right $! ()
               else
                 let msg = "Length is " ++ show m ++ " but expected " ++ show width
                 in Left [validationError msg []]
@@ -78,7 +78,7 @@ instance (KnownNat n, KnownNat m, StringProperty p) => StringProperty (FixedWidt
           label = "Number of fields is " ++ show w ++ " but expected " ++ show num
         in
           if w == num
-            then (label, Right ())
+            then (label, Right $! ())
             else (label, Left [])
 
       checkField :: Int -> String -> (String, Either [ValidationError] ())
@@ -304,7 +304,7 @@ instance
 checkNum :: Int -> [a] -> (String, Either [ValidationError] ())
 checkNum i fields =
   case compare (genericLength fields) i of
-    EQ -> ("", Right ())
+    EQ -> ("", Right $! ())
     LT -> ("Expected " ++ show i ++ " field(s) of fixed width but missing data", Left [])
     GT -> ("Expected " ++ show i ++ " field(s) of fixed width but got extra data", Left [])
 
@@ -319,7 +319,7 @@ checkField i str (wid,v) =
     msg = "Expected length " ++ show wid ++ " but got " ++ show m
     checkWidth =
       if wid == m
-        then Right ()
+        then Right $! ()
         else Left [validationError msg []]
   in
     ("Field " ++ show i, catValidationErrors [checkWidth, v str] )

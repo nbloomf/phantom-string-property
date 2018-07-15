@@ -38,7 +38,7 @@ allChars expects q = mapM_ check . zip [1..]
   where
     check :: (Int, Char) -> Either [ValidationError] ()
     check (i,c) = if q c
-      then Right ()
+      then Right $! ()
       else
         let
           err = "Read '" ++ [c] ++ "' at position "

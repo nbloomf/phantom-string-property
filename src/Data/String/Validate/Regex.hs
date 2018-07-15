@@ -4,16 +4,18 @@ module Data.String.Validate.Regex (
 ) where
 
 import Data.Proxy
+import Data.Typeable
 import Text.Regex.PCRE ((=~))
 import GHC.TypeLits
 
 import Data.String.Validate.Class
 
 data Matches (s :: Symbol) = Matches (Proxy s)
+  deriving (Eq, Show, Typeable)
 
 instance (KnownSymbol s) => StringProperty (Matches s) where
   validator (Matches proxy) str =
-    let m = symbolVal proxy in
+    let m = symbolVal $! proxy in
     if str =~ m
       then Right ()
       else
