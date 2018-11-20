@@ -17,7 +17,6 @@ import Data.String.Validate
 main :: IO ()
 main = do
   setEnv "TASTY_NUM_THREADS" "4"
-  setEnv "TASTY_HIDE_SUCCESSES" "True"
   defaultMain $
     localOption (QuickCheckTests 50000) $
     testGroup "Phantom String Properties"
@@ -52,6 +51,8 @@ main = do
         ]
 
       , testRegex
+
+      , testDSV
 
       , testGroup "Fixed Width"
         [ testManyFixedWidth
@@ -1298,6 +1299,14 @@ testRegex = testGroup "Regex"
   , testValidatorFor (Matches (Proxy :: Proxy "[a-c]")) (=~ "[a-c]")
   , testValidatorFor (Matches (Proxy :: Proxy "^f")) (=~ "^f")
   , testValidatorFor (Matches (Proxy :: Proxy "z$")) (=~ "z$")
+  ]
+
+
+testDSV :: TestTree
+testDSV = testGroup "DSV"
+  [ testValidatorFor
+      (ManySepBy (Proxy :: Proxy "a") (Proxy :: Proxy "b") Letters)
+      (all (all (all isLetter)) . splitEsc "a" "b" . tokenize ["a","b"])
   ]
 
 
