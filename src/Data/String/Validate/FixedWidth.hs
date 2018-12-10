@@ -1,4 +1,16 @@
 {-# LANGUAGE DataKinds, KindSignatures, BangPatterns #-}
+
+{-|
+Module      : Data.String.Validate.FixedWidth
+Description : Fixed-width substring predicates
+Copyright   : (c) 2018 Automattic, Inc.
+License     : GPL-3
+Maintainer  : nbloomf@gmail.com
+Stability   : experimental
+Portability : POSIX
+
+Type-level constraints on the substrings of a string by length.
+-}
 module Data.String.Validate.FixedWidth (
   -- * Fixed Width
     ManyFixedWidth(..)
@@ -21,6 +33,7 @@ import Data.String.Validate.Class
 
 
 
+-- | Many substrings of length exactly @width@, each satisfying @p@.
 data ManyFixedWidth (width :: Nat) p
   = ManyFixedWidth (Proxy width) p
   deriving (Eq, Show, Typeable)
@@ -57,8 +70,7 @@ instance (KnownNat n, StringProperty p) => StringProperty (ManyFixedWidth n p) w
 
 
 
-
-
+-- | Exactly @num@ fields of width exactly @width@, each satisfying @p@.
 data FixedWidth (width :: Nat) (num :: Nat) p
   = FixedWidth (Proxy width) (Proxy num) p
   deriving (Eq, Show, Typeable)
@@ -108,8 +120,7 @@ instance (KnownNat n, KnownNat m, StringProperty p) => StringProperty (FixedWidt
 
 
 
-
-
+-- | Exactly one field of width @w1@, satisfying @p1@.
 data FixedFormat1
       (w1 :: Nat) p1
   = FixedFormat1
@@ -136,8 +147,7 @@ instance
 
 
 
-
-
+-- | Exactly two fields of widths @w1@ and @w2@, satisfying @p1@ and @p2@, respectively.
 data FixedFormat2
       (w1 :: Nat) p1
       (w2 :: Nat) p2
@@ -169,8 +179,7 @@ instance
 
 
 
-
-
+-- | Exactly three fields of widths @w1@, @w2@, and @w3@, satisfying @p1@, @p2@, and @p3@, respectively.
 data FixedFormat3
       (w1 :: Nat) p1
       (w2 :: Nat) p2
@@ -207,8 +216,7 @@ instance
 
 
 
-
-
+-- | Exactly four fields of widths @w1@, @w2@, @w3@, and @w4@, satisfying @p1@, @p2@, @p3@, and @p4@, respectively.
 data FixedFormat4
       (w1 :: Nat) p1
       (w2 :: Nat) p2
@@ -250,8 +258,7 @@ instance
 
 
 
-
-
+-- | Exactly four fields of widths @w1@, @w2@, @w3@,  @w4@, and @w5@, satisfying @p1@, @p2@, @p3@, @p4@, and @p5@, respectively.
 data FixedFormat5
       (w1 :: Nat) p1
       (w2 :: Nat) p2

@@ -1,4 +1,16 @@
 {-# LANGUAGE ScopedTypeVariables, DataKinds, KindSignatures, BangPatterns #-}
+
+{-|
+Module      : Data.String.Validate.LinesOf
+Description : Line predicates
+Copyright   : (c) 2018 Automattic, Inc.
+License     : GPL-3
+Maintainer  : nbloomf@gmail.com
+Stability   : experimental
+Portability : POSIX
+
+Type-level constraints on the number and contents of the lines in a string.
+-}
 module Data.String.Validate.LinesOf (
     ManyLinesOf(..)
   , LinesOf(..)
@@ -21,8 +33,7 @@ import Data.String.Validate.Class
 
 
 
-
-
+-- | Each line of @x@ satisfies @p@.
 data ManyLinesOf p = ManyLinesOf p
   deriving (Eq, Show, Typeable)
 
@@ -34,8 +45,7 @@ instance (Typeable p, StringProperty p) => StringProperty (ManyLinesOf p) where
 
 
 
-
-
+-- | Exactly @num@ lines, each satisfying @p@.
 data LinesOf (num :: Nat) p = LinesOf (Proxy num) p
   deriving (Eq, Show, Typeable)
 
@@ -66,8 +76,7 @@ instance (KnownNat n, Typeable p, StringProperty p) => StringProperty (LinesOf n
 
 
 
-
-
+-- | Exactly one line satisfying @p1@.
 data LinesOf1 p1 = LinesOf1 p1
   deriving (Eq, Show, Typeable)
 
@@ -89,8 +98,7 @@ instance
 
 
 
-
-
+-- | Exactly two lines, satisfying @p1@ and @p2@, respectively.
 data LinesOf2 p1 p2 = LinesOf2 p1 p2
   deriving (Eq, Show, Typeable)
 
@@ -114,8 +122,7 @@ instance
 
 
 
-
-
+-- | Exactly three lines, satisfying @p1@, @p2@, and @p3@, respectively.
 data LinesOf3 p1 p2 p3 = LinesOf3 p1 p2 p3
   deriving (Eq, Show, Typeable)
 
@@ -141,8 +148,7 @@ instance
 
 
 
-
-
+-- | Exactly four lines, satisfying @p1@, @p2@, @p3@, and @p4@, respectively.
 data LinesOf4 p1 p2 p3 p4 = LinesOf4 p1 p2 p3 p4
   deriving (Eq, Show, Typeable)
 
@@ -170,8 +176,7 @@ instance
 
 
 
-
-
+-- | Exactly five lines, satisfying @p1@, @p2@, @p3@, @p4@, and @p5@, respectively.
 data LinesOf5 p1 p2 p3 p4 p5 = LinesOf5 p1 p2 p3 p4 p5
   deriving (Eq, Show, Typeable)
 
@@ -201,8 +206,7 @@ instance
 
 
 
-
-
+-- | Exactly six lines, satisfying @p1@, @p2@, @p3@, @p4@, @p5@, and @p6@, respectively.
 data LinesOf6 p1 p2 p3 p4 p5 p6 = LinesOf6 p1 p2 p3 p4 p5 p6
   deriving (Eq, Show, Typeable)
 
@@ -234,8 +238,7 @@ instance
 
 
 
-
-
+-- | Exactly seven lines, satisfying @p1@, @p2@, @p3@, @p4@, @p5@, @p6@, and @p7@, respectively.
 data LinesOf7 p1 p2 p3 p4 p5 p6 p7 = LinesOf7 p1 p2 p3 p4 p5 p6 p7
   deriving (Eq, Show, Typeable)
 

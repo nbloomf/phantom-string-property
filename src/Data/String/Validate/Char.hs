@@ -1,4 +1,16 @@
 {-# LANGUAGE BangPatterns #-}
+
+{-|
+Module      : Data.String.Validate.Char
+Description : Character predicates
+Copyright   : (c) 2018 Automattic, Inc.
+License     : GPL-3
+Maintainer  : nbloomf@gmail.com
+Stability   : experimental
+Portability : POSIX
+
+Type-level constraints on the characters appearing in a string.
+-}
 module Data.String.Validate.Char (
   -- * Character Classes
     PrintableChars(..)
@@ -208,6 +220,7 @@ instance StringProperty Latin1Chars where
 
 
 
+-- | Each character satisfies property @p@. For use with @Or@.
 data EachCharIs p = EachCharIs p
  deriving (Eq, Show, Typeable)
 

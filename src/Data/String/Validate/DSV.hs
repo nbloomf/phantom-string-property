@@ -1,4 +1,16 @@
 {-# LANGUAGE KindSignatures, DataKinds, TupleSections, ScopedTypeVariables #-}
+
+{-|
+Module      : Data.String.Validate.DSV
+Description : Delimiter separated value predicates
+Copyright   : (c) 2018 Automattic, Inc.
+License     : GPL-3
+Maintainer  : nbloomf@gmail.com
+Stability   : experimental
+Portability : POSIX
+
+Type-level constraints on the substrings of a string by length.
+-}
 module Data.String.Validate.DSV where
 
 import Data.Typeable

@@ -1,4 +1,16 @@
 {-# LANGUAGE DataKinds, KindSignatures #-}
+
+{-|
+Module      : Data.String.Validate.Regex
+Description : Regex predicates
+Copyright   : (c) 2018 Automattic, Inc.
+License     : GPL-3
+Maintainer  : nbloomf@gmail.com
+Stability   : experimental
+Portability : POSIX
+
+Type-level constraints on regexes matching a string.
+-}
 module Data.String.Validate.Regex (
     Matches(..)
 ) where
@@ -10,6 +22,7 @@ import GHC.TypeLits
 
 import Data.String.Validate.Class
 
+-- | Satisfies @x =~ s@.
 data Matches (s :: Symbol) = Matches (Proxy s)
   deriving (Eq, Show, Typeable)
 

@@ -1,3 +1,1 @@
-# Changelog for phantom-string-property2
-
-## Unreleased changes
+# Changelog for phantom-string-property

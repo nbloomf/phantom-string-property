@@ -1,4 +1,16 @@
 {-# LANGUAGE DataKinds, KindSignatures #-}
+
+{-|
+Module      : Data.String.Validate.Substring
+Description : Substring predicates
+Copyright   : (c) 2018 Automattic, Inc.
+License     : GPL-3
+Maintainer  : nbloomf@gmail.com
+Stability   : experimental
+Portability : POSIX
+
+Type-level constraints on the substrings of a string.
+-}
 module Data.String.Validate.Substring (
     IsExactly(..)
   , PrefixedBy(..)
@@ -19,6 +31,7 @@ import Data.String.Validate.Class
 
 
 
+-- | Satisfies @x == s@.
 data IsExactly (s :: Symbol) = IsExactly (Proxy s)
   deriving (Eq, Show, Typeable)
 
@@ -35,6 +48,7 @@ instance (KnownSymbol s) => StringProperty (IsExactly s) where
 
 
 
+-- | Satisfies @x == s ++ v@ for some @v@.
 data PrefixedBy (s :: Symbol) = PrefixedBy (Proxy s)
   deriving (Eq, Show, Typeable)
 
@@ -51,6 +65,7 @@ instance (KnownSymbol s) => StringProperty (PrefixedBy s) where
 
 
 
+-- | Satisfies @x == u ++ s ++ v@ for some @u@ and @v@.
 data InfixedBy (s :: Symbol) = InfixedBy (Proxy s)
   deriving (Eq, Show, Typeable)
 
@@ -67,6 +82,7 @@ instance (KnownSymbol s) => StringProperty (InfixedBy s) where
 
 
 
+-- | Satisfies @x == u ++ s@ for some @u@.
 data SuffixedBy (s :: Symbol) = SuffixedBy (Proxy s)
   deriving (Eq, Show, Typeable)
 
@@ -83,6 +99,7 @@ instance (KnownSymbol s) => StringProperty (SuffixedBy s) where
 
 
 
+-- | Satisfies @x /= s@.
 data IsNotExactly (s :: Symbol) = IsNotExactly (Proxy s)
   deriving (Eq, Show, Typeable)
 
@@ -99,6 +116,7 @@ instance (KnownSymbol s) => StringProperty (IsNotExactly s) where
 
 
 
+-- | Does not satisfy @x == s ++ v@ for any @v@.
 data NotPrefixedBy (s :: Symbol) = NotPrefixedBy (Proxy s)
   deriving (Eq, Show, Typeable)
 
@@ -115,6 +133,7 @@ instance (KnownSymbol s) => StringProperty (NotPrefixedBy s) where
 
 
 
+-- | Does not satisfy @x == u ++ s ++ v@ for any @u@ and @v@.
 data NotInfixedBy (s :: Symbol) = NotInfixedBy (Proxy s)
   deriving (Eq, Show, Typeable)
 
@@ -131,6 +150,7 @@ instance (KnownSymbol s) => StringProperty (NotInfixedBy s) where
 
 
 
+-- | Does not satisfy @x == u ++ s@ for any @u@.
 data NotSuffixedBy (s :: Symbol) = NotSuffixedBy (Proxy s)
   deriving (Eq, Show, Typeable)
 

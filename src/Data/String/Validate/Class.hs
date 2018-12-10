@@ -1,4 +1,16 @@
 {-# LANGUAGE ScopedTypeVariables, LambdaCase, TypeOperators, BangPatterns #-}
+
+{-|
+Module      : Data.String.Validate.Class
+Description : Type-level string properties
+Copyright   : (c) 2018 Automattic, Inc.
+License     : GPL-3
+Maintainer  : nbloomf@gmail.com
+Stability   : experimental
+Portability : POSIX
+
+Type-level constraints on strings.
+-}
 module Data.String.Validate.Class (
   -- * Validation
     StringOf()
@@ -50,8 +62,9 @@ validate p s = case validator p s of
 
 
 
+-- | Helper function for implementing @StringProperty@ instances.
 collectValidationErrors
-  :: String
+  :: String -- ^ Top level error message
   -> [(String, Either [ValidationError] ())]
   -> Either [ValidationError] ()
 collectValidationErrors title es = case collectLefts es of
@@ -69,6 +82,7 @@ collectValidationErrors title es = case collectLefts es of
           Right _ -> Left [(a,b)]
           Left cs -> Left $ (a,b):cs
 
+-- | Helper function for implementing @StringProperty@ instances; concatenates lists of @ValidationError@s.
 catValidationErrors
   :: [Either [ValidationError] ()]
   -> Either [ValidationError] ()
@@ -116,12 +130,14 @@ prettyTree = render . addPrefix
       (mapRoot ("└─ " ++) ("   " ++))
       (map addPrefix bs)
 
+-- | A validation error is a tree of strings.
 type ValidationError = Tree String
 
 -- | Constructor for validation errors
 validationError :: String -> [ValidationError] -> ValidationError
 validationError = Tree
 
+-- | Pretty print a list of validation errors.
 prettyValidationErrors :: [ValidationError] -> String
 prettyValidationErrors =
   intercalate "\n" . map prettyTree
@@ -143,8 +159,7 @@ validateIO p str = case validate p str of
 
 
 
-
-
+-- | Satisfies @x == ""@
 data IsEmpty = IsEmpty
   deriving (Eq, Show, Typeable)
 
@@ -155,6 +170,7 @@ instance StringProperty IsEmpty where
 
 
 
+-- | Satisfies @x /= ""@.
 data IsNotEmpty = IsNotEmpty
   deriving (Eq, Show, Typeable)
 
@@ -165,8 +181,7 @@ instance StringProperty IsNotEmpty where
 
 
 
-
-
+-- | Satisfies either @p@ or @q@ or both.
 data Or p q = p :|| q
   deriving (Eq, Show, Typeable)
 

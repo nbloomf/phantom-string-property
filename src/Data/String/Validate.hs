@@ -1,3 +1,14 @@
+{-|
+Module      : Data.String.Validate
+Description : Type-level string predicates
+Copyright   : (c) 2018 Automattic, Inc.
+License     : GPL-3
+Maintainer  : nbloomf@gmail.com
+Stability   : experimental
+Portability : POSIX
+
+Type-level constraints on runtime strings.
+-}
 module Data.String.Validate (
     module Data.String.Validate.Char
   , module Data.String.Validate.Class
