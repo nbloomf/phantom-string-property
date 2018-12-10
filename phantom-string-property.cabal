@@ -9,6 +9,8 @@ copyright:      2018 Automattic, Inc.
 license:        BSD3
 license-file:   LICENSE
 build-type:     Simple
+category:       Validation
+synopsis:       A type-level string property library.
 cabal-version:  >= 1.10
 
 extra-source-files:

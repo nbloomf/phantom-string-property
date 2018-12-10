@@ -22,6 +22,7 @@ import Data.String.Validate.Class
 
 
 
+-- | Consists of fields separated by @sep@, each satisfying @p@.
 data ManySepBy (sep :: Symbol) (esc :: Symbol) p
   = ManySepBy (Proxy sep) (Proxy esc) p
   deriving (Eq, Show, Typeable)
@@ -38,12 +39,12 @@ instance (KnownSymbol sep, KnownSymbol esc, StringProperty p, Typeable p)
 
 
 
--- Given a _separator_ token and an _escape_ token,
+-- | Given a _separator_ token and an _escape_ token,
 -- split a list of tokens into fields. The first field
 -- is the maximal prefix not containing a separator,
 -- unless it is immediately preceded by an escape.
 -- Note that the escape character has no significance
--- unless succeeded by a separator.
+-- unless succeeded by a separator. Exported for testing.
 splitEsc :: (Eq a) => a -> a -> [a] -> [[a]]
 splitEsc sep esc = unfoldr (nextSplit sep esc)
   where
@@ -65,11 +66,12 @@ splitEsc sep esc = unfoldr (nextSplit sep esc)
 
 
 
--- Tokenize a string by taking the first prefix appearing in
+-- | Tokenize a string by taking the first prefix appearing in
 -- a provided list of tokens, or just the first character if
 -- none exists. The order on tokens is their ordinal index in
 -- the input list, so if your code is not prefix-free just
 -- make sure the token order is graded on length (decreasing).
+-- Exported for testing.
 tokenize :: (Eq a) => [[a]] -> [a] -> [[a]]
 tokenize tokens = unfoldr (nextToken tokens)
   where

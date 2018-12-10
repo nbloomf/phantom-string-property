@@ -25,6 +25,7 @@ module Data.String.Validate.Class (
 
   -- * Errors
   , ValidationError
+  , Tree(..)
   , validationError
   , collectValidationErrors
   , catValidationErrors
@@ -38,11 +39,11 @@ import System.Exit (exitFailure)
 
 
 
--- | `String` with a phantom /property type/ tag @p@. The constructor for `Valid` is not exported, and the only way to create a value of type `Valid p` is with `validate`.
+-- | @String@ with a phantom /property type/ tag @p@. The constructor for @StringOf@ is not exported, and the only way to create a value of type @StringOf p@ is with @validate@.
 newtype StringOf p = Valid String
   deriving (Eq, Show)
 
--- | Recover the ordinary `String` value of a validated string.
+-- | Recover the ordinary @String@ value of a validated string.
 toString :: StringOf p -> String
 toString (Valid s) = s
 
@@ -99,6 +100,7 @@ catValidationErrors = catLefts
 
 
 
+-- | Basic rose tree.
 data Tree a
   = Tree a [Tree a]
   deriving (Eq, Show)
